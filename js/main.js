@@ -5,12 +5,21 @@ const modalAuth = document.querySelector('.modal-auth')
 const closeAuth = document.querySelector('.close-auth')
 const logInForm = document.querySelector('#logInForm')
 const loginInput = document.querySelector('#login')
+const passwordInput = document.querySelector('#password')
 
 let login = localStorage.getItem('gloDelivery')
 
 function toggleModalAuth () {
   modalAuth.classList.toggle('is-open')
+
   loginInput.style.borderColor = ''
+  passwordInput.style.borderColor = ''
+
+  if (modalAuth.classList.contains('is-open')) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
 }
 
 function authorized () {
@@ -40,8 +49,11 @@ function notAuthorized () {
   function logIn (event) {
     event.preventDefault()
 
-    if (loginInput.value.trim()) {
-      login = loginInput.value
+    const loginValue = loginInput.value.trim()
+    const passwordValue = passwordInput.value.trim()
+
+    if (loginValue && passwordValue) {
+      login = loginValue
       localStorage.setItem('gloDelivery', login)
 
       toggleModalAuth()
@@ -53,13 +65,29 @@ function notAuthorized () {
       logInForm.reset()
       checkAuth()
     } else {
-      loginInput.style.borderColor = 'red'
+      if (!loginValue) {
+        loginInput.style.borderColor = 'red'
+      } else {
+        loginInput.style.borderColor = ''
+      }
+
+      if (!passwordValue) {
+        passwordInput.style.borderColor = 'red'
+      } else {
+        passwordInput.style.borderColor = ''
+      }
     }
   }
 
   buttonAuth.addEventListener('click', toggleModalAuth)
   closeAuth.addEventListener('click', toggleModalAuth)
   logInForm.addEventListener('submit', logIn)
+
+  modalAuth.addEventListener('click', function (event) {
+    if (event.target === modalAuth) {
+      toggleModalAuth()
+    }
+  })
 }
 
 function checkAuth () {
